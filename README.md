@@ -71,9 +71,9 @@ To ensure your SDK's are loaded, please use the following directory format unles
 
 ---- app
 
------ public
+---- public
 
------ resources
+---- resources
 
 ---- PayPal-SDK
 
