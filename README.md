@@ -8,7 +8,7 @@ This software is being developed to accomplish several things. Foremost though, 
 
 ## Community goverened exchange
 
- The community should have more authority on how an exchange that they put their money into should be ran. From associated fees to exchange limits, we finally take this power from corporations / government -- and puts it back into the community. (planned) Using an Ethereum based voting solution the community will drive the majority of functioning.
+ The community should have more authority on how an exchange that they put their money into should be ran. From associated fees to exchange limits, we finally take this power from corporations -- and puts it back into the community. (planned) Using an Ethereum based voting solution the community will drive the majority of functioning.
 
 ## Exchange digital assets
 
@@ -39,3 +39,37 @@ This is perhaps the most attractive feature planned for this project. To combat 
 * Demo: http://192.169.148.246/exchange/public/index.php/home (Only those with this link will find it. Design is horrible.)
 
 See a full list of features, plans, and issues [here](https://github.com/ZenXChaos/ZenXTrading/projects/1)!
+
+
+----
+
+# Configuration and Dependencies
+
+## MySQL Database
+
+`~/exchange/config/database.php` <- Set your MySQL Database information here
+
+Import the SQL script in the master-dev root folder.
+
+## BlockCypher
+
+This project relies on the BlockCypher SDK to generate Bitcoin addresses and wallets. Visit https://blockcypher.com/ to create a key. Download the SDK [here](https://github.com/blockcypher).
+
+Set your token in `~/exchange/app/Http/Controllers/BitcoindController.php`.
+
+## PayPal SDK
+
+This project relies on the PayPal-SDK to process payments. Visit https://developer.paypal.com/ to create an app.
+
+Set your app credentials in `~/exchange/app/Http/Controllers/PaymentGateway/PaypalController.php`.
+
+## App Structure
+
+To ensure your SDK's are loaded, please use the following directory format unless otherwise specified in `~/exchange/public/index.php`.
+
+--- exchange
+---- app
+---- public
+---- resources
+--- PayPal-SDK
+--- BlockCypher
