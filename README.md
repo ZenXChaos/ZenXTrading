@@ -67,9 +67,14 @@ Set your app credentials in `~/exchange/app/Http/Controllers/PaymentGateway/Payp
 
 To ensure your SDK's are loaded, please use the following directory format unless otherwise specified in `~/exchange/public/index.php`.
 
---- exchange
+---- exchange
+
 ---- app
----- public
----- resources
---- PayPal-SDK
---- BlockCypher
+
+----- public
+
+----- resources
+
+---- PayPal-SDK
+
+---- BlockCypher
