@@ -30,6 +30,8 @@ class BitcoindController extends \App\Http\Controllers\Controller {
 	{
 		//Authentication Required
 		$this->middleware('auth');
+
+        header("Content-type: application/json");
 	}
 
 	/**

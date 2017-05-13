@@ -38,6 +38,8 @@ class PaypalController extends \App\Http\Controllers\Controller {
 	public function __construct()
 	{
 		$this->middleware('auth');
+
+        header("Content-type: application/json");
 	}
 
 	/**

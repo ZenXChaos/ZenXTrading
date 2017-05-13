@@ -21,39 +21,36 @@ class ExchangeRequestController extends \App\Http\Controllers\Controller{
         header("Content-type: application/json");
 	}
 
-	// Delete an exchange request
-	// Delete order
-	public function Remove(Request $request)
-	{
-		$order = \App\Exchange\BaseCurrency::where('id', $request->id)->first();
-
-		if($order!= null)
-		{
-			// If authenticated user owns order
-			if($order->owner->id == Auth::user()->id)
-			{
-				$order->forceDelete(); // Delete the order
-				return $order;
-			}else{
-				return null;
-			}
-		}
-	}
-
     public function Cancel(Request $request)
     {
         // $request is created with POST_PARAMS
-        // $request->way = $_POST['id']
 
-        $my_order = \App\Exchange\Currencies\BTC_USD::where(array('uid' => \Auth::user()->id, 'id' => \Auth::user()->id))->orderBy('way', 'asc')->orderBy('request_amount', 'desc')->get()->first();
+        $my_order = \App\Exchange\Currencies\BTC_USD::where(array('uid' => \Auth::user()->id, 'id' => $request->id))->get()->first();
 
-        if($my_order == null){
-            return null;
+        if($my_order == null){ // If order owned by authenticated user not found
+            return null; // Return null
         }else{
-            $my_order->forceDelete();
 
-            return $my_order;
+			$funds = null;
+			// Determine whether to return USD or BTC
+			if($my_order->way == "sell")
+			{
+				$funds = \App\Exchange\FundSource::where(array('uid' => \Auth::user()->id, 'currency' => 'btc'))->get()->first();
+			}else{
+				$funds = \App\Exchange\FundSource::where(array('uid' => \Auth::user()->id, 'currency' => 'usd'))->get()->first();
+			}
+
+
+			$funds->total_funds = abs($my_order->request_amount*$my_order->bid); // Get absolute value of order cost
+			$funds->funds_remaining = $funds->funds_remaining + $funds->total_funds; // Return balance
+			$funds->save(); // Update balance
+
+            $my_order->forceDelete(); // Delete the existing order
+
+            return $funds; // Return new funds
         }
+
+		return null;
     }
 
 	// Create an exchange request

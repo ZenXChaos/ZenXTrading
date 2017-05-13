@@ -6,6 +6,8 @@ A community governed crypto-currency exchange software.
 
 This software is being developed to accomplish several things. Foremost though, it is an open-source digital assets trading platform (currently in development).
 
+Currently, the software only runs on Testnet servers. No actual Bitcoin or USD is traded. Changing this happens in only 3 lines of code though :).
+
 ## Community goverened exchange
 
  The community should have more authority on how an exchange that they put their money into should be ran. From associated fees to exchange limits, we finally take this power from corporations -- and puts it back into the community. (planned) Using an Ethereum based voting solution the community will drive the majority of functioning.

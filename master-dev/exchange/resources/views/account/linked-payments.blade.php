@@ -9,7 +9,7 @@
 			<span type="text" class="col-md-1"></span>
 			<input type="text" name="EXP" placeholder="Expiration" class="col-md-2" />
 			<span type="text"class="col-md-2"></span>
-			<input type="text" name="USD" placeholder="Amount in Dollars" class="col-md-2" /><br />
+			<input type="text" name="USD" placeholder="Amount in Dollars" class="col-md-5" /><br />
 
 			<input type="submit" class="submit-payment button button-primary col-md-12" value="Purchase" />
 		

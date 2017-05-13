@@ -49,7 +49,13 @@
 			<td><small>Ƀ</small> {{ $order->request_amount - $order->filled }}</td>
 			<td><small>$</small> {{ $order->bid }}</td>
             <td><small>$</small> {{ $order->filled }}</td>
-            <td>{{ $order->filled == 0 ? "<button class='button button-primary cancel-order-button' data-id='{{ $order->id }}'>Cancel</button>" : "Active" }} </td>
+            <td>
+                @if($order->filled == 0)
+                    <button class='button button-primary cancel-order-button' data-id='{{ $order->id }}'>Cancel</button>
+                @else
+                    Active
+                @endif 
+            </td>
 		</tr>
 		@endforeach
 	</tbody>
@@ -65,7 +71,7 @@
 
         $(".cancel-order-button").click(function(){
             var button = $(this);
-            $.get("/exchange/public/index.php/Exchange/CancelRequest/", {id: button.attr("data-id")}, function(){
+            $.get("/exchange/public/index.php/Exchange/CancelRequest/" + button.attr("data-id"), function(){
                 window.location = '/exchange/public/index.php/home';
             });
         });

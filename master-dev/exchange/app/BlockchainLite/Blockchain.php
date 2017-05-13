@@ -82,7 +82,7 @@ class Blockchain extends \App\Http\Controllers\Controller {
 		fwrite($fp, pack('V', ($datalen + \App\BlockchainLite\Blockchain::blksize())), 4);		// Length
 	}
 
-	public function WalkChain($uid)
+	public function WalkChain($uid) // Consistency check
 	{
 		$fn = "/var/www/blockchain/user_".$uid.".dat";
 		$hashlen = 0;
@@ -117,11 +117,11 @@ class Blockchain extends \App\Http\Controllers\Controller {
 			}else{
 				if($pHash != $prevhash)
 				{
+					// Invalid link
 					$invalidChain = true;
-					echo "Invalid chain!!<br />" . $prevhash;
 					break;
 				}else{
-					echo "Valid link!<br />";
+					// Valid Link
 				}
 			}
 
@@ -137,6 +137,9 @@ class Blockchain extends \App\Http\Controllers\Controller {
 			* Print Block Data
 			*
 			*/
+			
+			
+			/*
 			print "height...... ".++$height."<br />";
 			print "magic....... ".dechex($magic)."<br />";
 			print "version..... ".$version."<br />";
@@ -145,16 +148,15 @@ class Blockchain extends \App\Http\Controllers\Controller {
 			print "blockhash... ".$hash."<br />";
 			print "datalen..... ".$datalen."<br />";
 			print "data........ ".wordwrap($data, 100)."<br /><br />";
-			/*
-			*
-			* Consistency check
-			*
 			*/
-
 		}
 
 		fclose($fp);
+
+		return !$invalidChain;
 	}
+
+
 
 
 	public static function unpack32($data,$ofs) {
