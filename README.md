@@ -69,7 +69,7 @@ To ensure your SDK's are loaded, please use the following directory format unles
 
 ---- exchange
 
----- app
+---- app .... {laravel-folder-contents}
 
 ---- public
 
