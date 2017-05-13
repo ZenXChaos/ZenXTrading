@@ -69,7 +69,7 @@ To ensure your SDK's are loaded, please use the following directory format unles
 
 ---- exchange
 
----- app .... {laravel-folder-contents}
+---- app .... {laravel-folder-contents} | Install laravel under `~/exchange/{app,public,vendor, etc}`
 
 ---- public
 
