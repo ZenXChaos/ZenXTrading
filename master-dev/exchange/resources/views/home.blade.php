@@ -30,7 +30,7 @@
 							<li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
 							<li><a data-toggle="tab" href="#menu1">Trade</a></li>
 							<li><a data-toggle="tab" href="#menu2">Funding</a></li>
-							<li><a data-toggle="tab" href="#menu3">Security</a></li>
+							<li><a data-toggle="tab" href="#menu3">Bitcoin</a></li>
 						</ul>
 					</div>
 					<div class="panel-body">
@@ -53,9 +53,9 @@
 							<div id="menu2" class="tab-pane fade">
 								@include('account.linked-payments')
 							</div>
-							<div id="menu3" class="tab-pane fade">
-								<h3>Menu 3</h3>
-								<p>Some content in menu 3.</p>
+							<div id="menu3" class="tab-pane fade" ng-app="btcApps">
+								<h3>Ƀitcoin Addresses</h3>
+								@include('account.btc-addresses')
 							</div>
 						</div>
 					</div>

@@ -31,7 +31,7 @@ class BitcoindController extends \App\Http\Controllers\Controller {
 		//Authentication Required
 		$this->middleware('auth');
 
-        header("Content-type: application/json");
+     	header("Content-type: application/json");
 	}
 
 	/**
@@ -42,7 +42,6 @@ class BitcoindController extends \App\Http\Controllers\Controller {
 	public function GenBitcoinWalletAddress(Request $request)
 	{
 		//First require that user is authenticated
-		$this->middleware('auth');
 
 		$apiContext = \BlockCypher\Rest\ApiContext::create(
                         'test3', 'btc', 'v1', new \BlockCypher\Auth\SimpleTokenCredential(''),
@@ -61,7 +60,7 @@ class BitcoindController extends \App\Http\Controllers\Controller {
 
 
 		$bwa = new \App\Bitcoind\BitcoinWalletAddress(); // Create new Ƀitcoin Wallet->Address Endpoint object
-		$bwa->wallet_id = 0;
+		$bwa->uid = \Auth::user()->id;
 		$bwa->wallet_address = $address->address; // Wallet->Address identifier. Not to be confused with Wallet Address.
 
 		if(sizeof($address->txrefs) > 0 ){
@@ -92,32 +91,21 @@ class BitcoindController extends \App\Http\Controllers\Controller {
 		return view('gen-address', ['address'=>$btcblock['address'], 'privatekey' => $btcblock['private'], 'publickey' => $btcblock['public'], 'privatekey_wif' => $btcblock['wif']]);
 	}
 
+	public function GrabMyAddresses()
+	{
+		return \Auth::user()->BTCAddresses()->get();
+	}
+
 	public function DeleteWalletAddress ($wallet_address)
 	{
-
-		$h = \App\Bitcoind\BitcoinWallet::find(3)->addys;
-
-		var_dump($h);
-
-
-
-		die();
 		// Find the wallet->address bound to 
-		$wallet_addr = \App\Bitcoind\BitcoinWalletAddress::where('wallet_address', $wallet_address)->first()->wallet;
+		$wallet_addr = \App\Bitcoind\BitcoinWalletAddress::where(array('uid' => \Auth::user()->id, 'wallet_address' => $wallet_address))->first();
 
 		if($wallet_addr==null){
 			return json_encode(array('action'=>'delete:wallet_'.$wallet_address, 'action_status'=>'fail', 'reason'=>'Wallet->Address does not exist!')); // Wallet->Address cannot be found
 		}
 		
-		// Get the owner of the wallet
-		$owner = $wallet_addr->owner;
-
-		// Compare owner to logged in user
-		if($owner->id!=Auth::user()->id){
-			return json_encode(array('action'=>'delete:wallet_'.$wallet_address, 'action_status'=>'fail', 'reason'=>'Permission denied!')); // Probably does not own the wallet->address
-		}else{
-			$wallet_addr->forceDelete(); // Delete the record
-		}
+		$wallet_addr->forceDelete(); // Delete the record
 		
 		return json_encode(array('action'=>'delete:wallet_'.$wallet_address, 'action_status'=>'success'));
 	}

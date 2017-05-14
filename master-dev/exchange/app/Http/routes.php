@@ -21,7 +21,7 @@ Route::group(array('prefix' => 'Bitcoind'), function(){
 
 		Route::get("/GenerateAddress", 'BitcoindController@GenBitcoinWalletAddress');
 
-		Route::get("/CreateAddress", 'BitcoindController@GenBitcoinWalletAddress_v2');
+		Route::get("/MyAddresses", 'BitcoindController@GrabMyAddresses');
 
 		Route::get("/{wallet_address}/Delete", 'BitcoindController@DeleteWalletAddress');
 	});

@@ -25,7 +25,7 @@ class BitcoinWalletAddress extends Model {
 
         //Validate required Address fields
 		return Validator::make($data, [
-            'wallet_id' => 'required',
+			'uid' => 'required',
             'wallet_address' => 'required',
 			'confirmations' => 'required|min:0',
 			'total_received' => 'required',
@@ -42,7 +42,7 @@ class BitcoinWalletAddress extends Model {
 		]);
 	}
 
-	protected $fillable =   ['wallet_id', 'wallet_address', 'confirmations', 
+	protected $fillable =   ['uid', 'wallet_address', 'confirmations', 
                             'total_received', 'total_sent', 'balance', 
                             'unconfirmed_balance', 'final_balance', 'n_tx', 
                             'unconfirmed_n_tx', 'final_n_tx', 'tx_url', 
@@ -56,11 +56,6 @@ class BitcoinWalletAddress extends Model {
 	
 
     protected $hidden = [];
-
-    public function wallet()
-    {
-        return $this->hasOne('App\Bitcoind\BitcoinWallet', 'id', 'wallet_id');
-    }
 
     public static function GetAddrInfo($addr)
     {

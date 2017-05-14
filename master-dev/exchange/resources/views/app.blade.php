@@ -20,13 +20,14 @@
 		<!-- JQUERY / BOOTSTRAP CDN -->
 		<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.js"></script>
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
+
 
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css" />
 
 
         <!-- Private Key Mini-App -->
-        <script src="{{ asset('/js/hide-passphrase.js') }}"></script>
-
+        <script src="{{ asset('/js/btc-apps.js') }}"></script>
 	<![endif]-->
 </head>
 <body>
