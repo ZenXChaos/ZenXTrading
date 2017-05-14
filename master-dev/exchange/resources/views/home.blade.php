@@ -31,9 +31,10 @@
 							<li><a data-toggle="tab" href="#menu1">Trade</a></li>
 							<li><a data-toggle="tab" href="#menu2">Funding</a></li>
 							<li><a data-toggle="tab" href="#menu3">Bitcoin</a></li>
+							<li><a data-toggle="tab" href="#menu4">Ethereum</a></li>
 						</ul>
 					</div>
-					<div class="panel-body">
+					<div class="panel-body" ng-app="btcApps">
 						<div class="tab-content">
 							<div id="home" class="tab-pane fade in active">
 								<h3>HOME</h3>
@@ -53,9 +54,13 @@
 							<div id="menu2" class="tab-pane fade">
 								@include('account.linked-payments')
 							</div>
-							<div id="menu3" class="tab-pane fade" ng-app="btcApps">
+							<div id="menu3" class="tab-pane fade">
 								<h3>Ƀitcoin Addresses</h3>
 								@include('account.btc-addresses')
+							</div>
+							<div id="menu4" class="tab-pane fade">
+								<h3>Ethereum Addresses</h3>
+								@include('account.eth-addresses')
 							</div>
 						</div>
 					</div>

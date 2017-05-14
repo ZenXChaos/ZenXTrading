@@ -3,6 +3,7 @@ app.controller("btcappsController", function($scope) {
 
 	$scope.walletAddresses = [];
 
+	$scope.eth_walletAddresses = [];
 	$scope.lock = false;
 
 
@@ -31,11 +32,25 @@ app.controller("btcappsController", function($scope) {
 		});
     });
 
+    eth_generateWalletAddress = (function(){
+    	$scope.disableInput();
+    	$.get("/exchange/public/index.php/Ethereumd/Wallet/GenerateAddress", function(data){
+			grabMyAddresses();
+    		$scope.enableInput();
+		});
+    });
+
     $scope.deleteWalletAddress = (function(address){
     	$scope.disableInput();
     	$.get("/exchange/public/index.php/Bitcoind/Wallet/"+address+"/Delete", function(data){
 			grabMyAddresses();
-    		$scope.enableInput();
+		});
+    });
+
+    $scope.eth_deleteWalletAddress = (function(address){
+    	$scope.disableInput();
+    	$.get("/exchange/public/index.php/Ethereumd/Wallet/"+address+"/Delete", function(data){
+			grabMyAddresses();
 		});
     });
 
@@ -44,9 +59,17 @@ app.controller("btcappsController", function($scope) {
     	$.get("/exchange/public/index.php/Bitcoind/Wallet/MyAddresses", function(data){
 
 			$scope.walletAddresses = data;
-    		$scope.enableInput();
 			$scope.$apply();
 		});
+
+    	$.get("/exchange/public/index.php/Ethereumd/Wallet/MyAddresses", function(data){
+
+			$scope.eth_walletAddresses = data;
+			$scope.$apply();
+		});
+
+		$scope.enableInput();
+
     });
 
     grabMyAddresses();

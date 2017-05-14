@@ -70,6 +70,21 @@ class ExchangeRequestController extends \App\Http\Controllers\Controller{
 		$bid = $request->bid;
 		$usdfunds = null;
 
+		switch($request->order_type)
+		{
+			case "BTC-USD":
+				$exchReq = new \App\Exchange\Currencies\BTC_USD();
+				break;
+
+			case "ETH-USD":
+				$exchReq = new \App\Exchange\Currencies\ETH_USD();
+				break;
+
+			default:
+				return null;
+				break;
+		}
+
 		// Get|Set the order type
 		switch($request->way)
 		{

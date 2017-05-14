@@ -27,7 +27,7 @@
 
 
         <!-- Private Key Mini-App -->
-        <script src="{{ asset('/js/btc-apps.js') }}"></script>
+        <script src="{{ asset('/js/currency-apps.js') }}"></script>
 	<![endif]-->
 </head>
 <body>

@@ -36,4 +36,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->hasMany('App\Bitcoind\BitcoinWalletAddress', 'uid', 'id');
     }
 
+	public function ETHAddresses() // Owner of currency
+    {
+        return $this->hasMany('App\Ethereumd\EthereumWalletAddress', 'uid', 'id');
+    }
+
 }

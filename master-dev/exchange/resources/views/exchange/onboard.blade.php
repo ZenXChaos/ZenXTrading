@@ -22,8 +22,10 @@
 
     <select name="currency" class="col-md-3">
         <option>I want to exchange...</option>
-        <option value="buy">USD for ɃTC</option>
-        <option value="sell">ɃTC for USD</option>
+        <option value="buy" data-id="BTC-USD" class="currency-option">USD for ɃTC</option>
+        <option value="sell" data-id="BTC-USD" class="currency-option">ɃTC for USD</option>
+        <option value="buy" data-id="ETH-USD" class="currency-option">USD for ETH</option>
+        <option value="sell" data-id="ETH-USD" class="currency-option">ETH for USD</option>
     </select>
 
     <input type="text" name="shares" class="col-md-2" placeholder="# of shares" />
@@ -64,7 +66,7 @@
 <script>
     $(document).ready(function(){
         $(".submit-exchange").click(function(){
-            $.get("/exchange/public/index.php/Exchange/BTC-USD/Submit/" + $("select[name='currency']").val() + ":" + $("input[name='shares']").val() + "@" + $("input[name='bid']").val() + ":0/", function(){
+            $.get("/exchange/public/index.php/Exchange/" + $("option[class='currency-option']:selected").attr("data-id") + "/Submit/" + $("select[name='currency']").val() + ":" + $("input[name='shares']").val() + "@" + $("input[name='bid']").val() + ":0/", function(){
                 window.location = '/exchange/public/index.php/home';
             });
         });

@@ -8,17 +8,17 @@ use BlockCypher\Client\AddressClient;
 use BlockCypher\Auth\SimpleTokenCredential;
 use BlockCypher\Rest\ApiContext;
 use Illuminate\Http\Request;
-use App\Bitcoind;
+use App\Ethereumd;
 //use BlockCypher\Client\WalletClient;
 
-class BitcoindController extends \App\Http\Controllers\Controller {
+class EthereumdController extends \App\Http\Controllers\Controller {
 
 	/*
 	|--------------------------------------------------------------------------
-	| Bitcoind Controller
+	| Ethereumd Controller
 	|--------------------------------------------------------------------------
 	|
-	| This controller contains most of the Bitcoin(wallet) functionality.
+	| This controller contains most of the Ethereum(wallet) functionality.
 	| 
 	*/
 
@@ -37,29 +37,29 @@ class BitcoindController extends \App\Http\Controllers\Controller {
 	/**
 	 * Wallet Funds Management
 	 *
-	 * These set of functions handle tasks such as Wallet Creation, Balance Inqueries, and other useful tasks specific to the Bitcoin Wallet.
+	 * These set of functions handle tasks such as Wallet Creation, Balance Inqueries, and other useful tasks specific to the Ethereum Wallet.
 	 */
-	public function GenBitcoinWalletAddress(Request $request)
+	public function GenEthereumWalletAddress(Request $request)
 	{
 		//First require that user is authenticated
 
 		$apiContext = \BlockCypher\Rest\ApiContext::create(
-                        'test3', 'btc', 'v1', new \BlockCypher\Auth\SimpleTokenCredential(''),
+                        'test', 'beth', 'v1', new \BlockCypher\Auth\SimpleTokenCredential(''),
                         array('log.LogEnabled' => true, 'log.FileName' => 'BlockCypher.log', 'log.LogLevel' => 'DEBUG')
                 );
                 
 		$addressClient = new \BlockCypher\Client\AddressClient($apiContext);
         $data = $addressClient->generateAddress();
 
-		$btcblock = (array) json_decode($data, true); // Convert JSON to array
-		$btcblock = (object) $btcblock; //Convert array to object
+		$ethblock = (array) json_decode($data, true); // Convert JSON to array
+		$ethblock = (object) $ethblock; //Convert array to object
 
-		$address = $addressClient->get($btcblock->address);
+		$address = $addressClient->get($ethblock->address);
 
 		$address->txrefs = $address->txrefs != null ? (object) $address->txrefs : null ;
 
 
-		$bwa = new \App\Bitcoind\BitcoinWalletAddress(); // Create new Ƀitcoin Wallet->Address Endpoint object
+		$bwa = new \App\Ethereumd\EthereumWalletAddress(); // Create new Ƀitcoin Wallet->Address Endpoint object
 		$bwa->uid = \Auth::user()->id;
 		$bwa->wallet_address = $address->address; // Wallet->Address identifier. Not to be confused with Wallet Address.
 
@@ -88,13 +88,13 @@ class BitcoindController extends \App\Http\Controllers\Controller {
 
 	public function GrabMyAddresses()
 	{
-		return \Auth::user()->BTCAddresses()->get();
+		return \Auth::user()->ETHAddresses()->get();
 	}
 
 	public function DeleteWalletAddress ($wallet_address)
 	{
 		// Find the wallet->address bound to 
-		$wallet_addr = \App\Bitcoind\BitcoinWalletAddress::where(array('uid' => \Auth::user()->id, 'wallet_address' => $wallet_address))->first();
+		$wallet_addr = \App\Ethereumd\EthereumWalletAddress::where(array('uid' => \Auth::user()->id, 'wallet_address' => $wallet_address))->first();
 
 		if($wallet_addr==null){
 			return json_encode(array('action'=>'delete:wallet_'.$wallet_address, 'action_status'=>'fail', 'reason'=>'Wallet->Address does not exist!')); // Wallet->Address cannot be found

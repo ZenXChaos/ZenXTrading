@@ -30,6 +30,22 @@ Route::group(array('prefix' => 'Bitcoind'), function(){
 
 });
 
+
+Route::group(array('prefix' => 'Ethereumd'), function(){
+
+	Route::group (array('prefix' => 'Wallet'), function(){
+
+		Route::get("/GenerateAddress", 'EthereumdController@GenEthereumWalletAddress');
+
+		Route::get("/MyAddresses", 'EthereumdController@GrabMyAddresses');
+
+		Route::get("/{wallet_address}/Delete", 'EthereumdController@DeleteWalletAddress');
+	});
+
+	Route::get('/', function(){ return "hi!" ; });
+
+});
+
 Route::get("/WalkChain/{uid}", '\App\BlockchainLite\Blockchain@WalkChain');
 
 Route::group(array('prefix' => 'Funding'), function(){
