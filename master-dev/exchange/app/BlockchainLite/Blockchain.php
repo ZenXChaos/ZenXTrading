@@ -156,7 +156,40 @@ class Blockchain extends \App\Http\Controllers\Controller {
 		return !$invalidChain;
 	}
 
+	public static function LockAuthUser($lock_length)
+	{
+		$user = clone \Auth::user();
+		$user->lock = time()+$lock_length;
 
+		if(is_int($user->lock))
+		{
+			$user->save();
+			return $user->lock;
+		}
+
+		return 0;
+	}
+
+	public static function ProceedWithLock()
+	{
+		$user = clone \Auth::user();
+
+		return time()>$user->lock or die(['Error'=>'Denied request']);
+	}
+
+	public static function UnlockAuthUser($lock_length)
+	{
+		$user = clone \Auth::user();
+		$user->lock = 0;
+
+		if(is_int($user->lock))
+		{
+			$user->save();
+			return $user->lock;
+		}
+
+		return 0;
+	}
 
 
 	public static function unpack32($data,$ofs) {

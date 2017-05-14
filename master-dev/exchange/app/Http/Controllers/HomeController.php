@@ -30,11 +30,13 @@ class HomeController extends Controller {
 	 */
 	public function index()
 	{
+
 		$sell_orders = \App\Exchange\Currencies\BTC_USD::where(array('way' => 'sell'))->orderBy('request_amount', 'desc')->take(25)->get();
 		$buy_orders = \App\Exchange\Currencies\BTC_USD::where(array('way' => 'buy'))->orderBy('request_amount', 'desc')->take(25)->get();
 		$my_orders = \App\Exchange\Currencies\BTC_USD::where(array('uid' => \Auth::user()->id))->orderBy('way', 'asc')->orderBy('request_amount', 'desc')->take(1000)->get();
 
 		$usdfunds = \App\Exchange\FundSource::where(array('uid' => \Auth::user()->id, 'currency' => 'usd'))->orderBy('id', 'desc')->take(1)->first();
+
 		return view('home', array('sell_orders' => $sell_orders, 'buy_orders' => $buy_orders, 'usdfunds' => $usdfunds, 'my_orders' => $my_orders ));
 	}
 
