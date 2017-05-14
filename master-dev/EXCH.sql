@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: May 12, 2017 at 08:46 PM
+-- Generation Time: May 14, 2017 at 03:11 PM
 -- Server version: 5.6.35-cll-lve
 -- PHP Version: 5.6.30
 
@@ -64,8 +64,8 @@ CREATE TABLE IF NOT EXISTS `btc-wallets` (
 
 CREATE TABLE IF NOT EXISTS `btc-wallet_addresses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `wallet_id` int(11) NOT NULL,
-  `wallet_address` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `wallet_address` char(64) NOT NULL,
   `confirmations` int(11) NOT NULL DEFAULT '0',
   `total_received` float NOT NULL,
   `total_sent` float NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `btc-wallet_addresses` (
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `used` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=37 ;
 
 -- --------------------------------------------------------
 
@@ -132,6 +132,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(255) NOT NULL,
   `password` varchar(60) NOT NULL,
   `remember_token` varchar(60) NOT NULL,
+  `lock` bigint(20) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
