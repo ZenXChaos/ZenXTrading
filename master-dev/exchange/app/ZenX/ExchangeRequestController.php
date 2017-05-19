@@ -68,16 +68,41 @@ class ExchangeRequestController extends \App\Http\Controllers\Controller{
 		$givetake = $request->givetake; // Permissable price error margin. Wiling to sell/buy for $request->givetake plus or minus. 
 		$align_market = $request->align_market; // Should price always align with market value ?
 		$bid = $request->bid;
-		$usdfunds = null;
+		$primaryfunds = null;
+		$secondaryfunds = null;
+		$enough = false;
 
 		switch($request->order_type)
 		{
 			case "BTC-USD":
 				$exchReq = new \App\Exchange\Currencies\BTC_USD();
+				$enough = $way == "sell" ? $amount >= 0.1 : $amount >= 1;
+
+				$primaryfunds = \App\Exchange\FundSource::where(array('uid' => \Auth::user()->id, 'currency' => 'btc'))->orderBy('id', 'desc')->take(1)->get()->first();
+
+
+				$secondaryfunds = \App\Exchange\FundSource::where(array('uid' => \Auth::user()->id, 'currency' => 'usd'))->orderBy('id', 'desc')->take(1)->get()->first();
+
 				break;
 
 			case "ETH-USD":
 				$exchReq = new \App\Exchange\Currencies\ETH_USD();
+				$enough = $way == "sell" ? $amount >=0.1 : $amount >= 1;
+
+				$primaryfunds = \App\Exchange\FundSource::where(array('uid' => \Auth::user()->id, 'currency' => 'eth'))->orderBy('id', 'desc')->take(1)->get()->first();
+
+
+				$secondaryfunds = \App\Exchange\FundSource::where(array('uid' => \Auth::user()->id, 'currency' => 'usd'))->orderBy('id', 'desc')->take(1)->get()->first();
+				break;
+
+			case "BTC-ETH":
+				$exchReq = new \App\Exchange\Currencies\BTC_ETH();
+				$enough = $way == "sell" ? $amount >= 0.1 : $amount >= 0.1;
+
+				$primaryfunds = \App\Exchange\FundSource::where(array('uid' => \Auth::user()->id, 'currency' => 'btc'))->orderBy('id', 'desc')->take(1)->get()->first();
+
+
+				$secondaryfunds = \App\Exchange\FundSource::where(array('uid' => \Auth::user()->id, 'currency' => 'eth'))->orderBy('id', 'desc')->take(1)->get()->first();
 				break;
 
 			default:
@@ -85,25 +110,21 @@ class ExchangeRequestController extends \App\Http\Controllers\Controller{
 				break;
 		}
 
+		$updatedfunds = new \App\Exchange\FundSource();
 		// Get|Set the order type
 		switch($request->way)
 		{
-			case "buy": // User owns USD, wants Ƀitcoin
-				$exchReq = new \App\Exchange\Currencies\BTC_USD();
-				$enough = $amount > 1; // Min USD
+			case "sell": // User owns USD, wants Ƀitcoin
 
-				$usdfunds = \App\Exchange\FundSource::where(array('uid' => \Auth::user()->id, 'currency' => 'usd'))->orderBy('id', 'desc')->take(1)->get()->first();
-
-				if( $usdfunds==null || $usdfunds->funds_remaining == 0 )
+				if( $primaryfunds==null || $primaryfunds->funds_remaining == 0 )
 				{
 					return json_encode(array('Error'=>'No funds available'));
-				}else if ( $usdfunds->funds_remaining >= ($amount*$bid) )
+				}else if ( $primaryfunds->funds_remaining >= ($amount*$bid) )
 				{
-					$updatedfunds = new \App\Exchange\FundSource();
-					$updatedfunds->uid = $usdfunds->uid;
-					$updatedfunds->currency = $usdfunds->currency;
+					$updatedfunds->uid = $primaryfunds->uid;
+					$updatedfunds->currency = $primaryfunds->currency;
 					$updatedfunds->total_funds = (-$amount*3);
-					$updatedfunds->funds_remaining = $usdfunds->funds_remaining - ($amount*$bid);
+					$updatedfunds->funds_remaining = $primaryfunds->funds_remaining - ($amount*$bid);
 					$updatedfunds->previous_hash = "11";
 					$updatedfunds->hash = "11";
 
@@ -117,33 +138,26 @@ class ExchangeRequestController extends \App\Http\Controllers\Controller{
 				
 				break;
 
-			case "sell":
-				$exchReq = new \App\Exchange\Currencies\BTC_USD();
-				$enough = $amount > 0.1; // Min ɃTC
+			case "buy":
 
-				$usdfunds = \App\Exchange\FundSource::where(array('uid' => \Auth::user()->id, 'currency' => 'btc'))->orderBy('id', 'desc')->take(1)->get()->first();
-
-				if( $usdfunds==null || $usdfunds->funds_remaining == 0 )
+				if( $secondaryfunds==null || $secondaryfunds->funds_remaining == 0 )
 				{
 					return json_encode(array('Error'=>'No funds available'));
-				}else if ( $usdfunds->funds_remaining >= ($amount*$bid) )
+				}else if ( $secondaryfunds->funds_remaining >= ($amount*$bid) )
 				{
-					$updatedfunds = new \App\Exchange\FundSource();
-					$updatedfunds->uid = $usdfunds->uid;
-					$updatedfunds->currency = $usdfunds->currency;
+					$updatedfunds->uid = $secondaryfunds->uid;
+					$updatedfunds->currency = $secondaryfunds->currency;
 					$updatedfunds->total_funds = (-$amount*$bid);
-					$updatedfunds->funds_remaining = $usdfunds->funds_remaining - ($amount*$bid);
+					$updatedfunds->funds_remaining = $secondaryfunds->funds_remaining - ($amount*$bid);
 					$updatedfunds->previous_hash = "11";
 					$updatedfunds->hash = "11";
 
-					$updatedfunds->save();
 
 					\App\BlockchainLite\Blockchain::addblock("/var/www/blockchain/user_".$updatedfunds->uid.".dat", $updatedfunds, false);
 
 				}else{
 					return json_encode(array('Error'=>'Insufficient funds'));
 				}
-				return null;
 				break;
 
 			default:
@@ -152,16 +166,20 @@ class ExchangeRequestController extends \App\Http\Controllers\Controller{
 		}
 
 		$enoughbid = $bid > 0.002;
+
 		
 		// Some validation
-		if($uid < 0 || $way == null|| $align_market == null || $enough == false || $enoughbid == false)
+		if($uid < 0 || $way == null|| $enough == false || $enoughbid == false)
 		{
 			return json_encode(array('error'=>'Insufficient funds'));
 		}
 
+		$updatedfunds->save();
+
 		// Set column values
 		$exchReq->uid = $uid;
 		$exchReq->way = $way;
+		$exchReq->bid = $bid;
 		$exchReq->request_amount = $amount;
 		$exchReq->givetake = $givetake;
 		$exchReq->align_market = $align_market;

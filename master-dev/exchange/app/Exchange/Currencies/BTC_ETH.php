@@ -3,11 +3,11 @@
 use Illuminate\Database\Eloquent\Model;
 
 // Ƀitcoin to USD
-class BTC_USD extends \App\Exchange\BaseCurrency {
+class BTC_ETH extends \App\Exchange\BaseCurrency {
 
 
 	public function __construct(){
-		$this->currency_model = "btc-usd";
+		$this->currency_model = "btc-eth";
 	}
 
 	/**
@@ -15,6 +15,6 @@ class BTC_USD extends \App\Exchange\BaseCurrency {
 	 *
 	 * @var string
 	 */
-	protected $table = 'btc-usd_orders';
+	protected $table = 'btc-eth_orders';
 
 }

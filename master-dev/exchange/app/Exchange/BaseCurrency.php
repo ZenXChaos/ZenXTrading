@@ -13,6 +13,8 @@ class BaseCurrency extends Model {
 
 	protected $rules = array('way' => 'in:buy|in:sell'); // Require `way` = sell|buy
 
+	public $currency_model = "btc-usd";
+
 	public function owner() // Owner of currency
     {
         return $this->hasOne('App\User', 'id', 'uid');
@@ -30,7 +32,7 @@ class BaseCurrency extends Model {
 		]);
 	}
 
-	protected $fillable = ['uid', 'way', 'request_amount', 'givetake', 'align_market', 'filled'];
+	protected $fillable = ['uid', 'way', 'request_amount', 'bid', 'givetake', 'align_market', 'filled'];
 
 	protected $hidden = [];
 
